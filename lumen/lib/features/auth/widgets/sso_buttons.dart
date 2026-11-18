@@ -8,9 +8,14 @@ import '../models/sso_provider.dart';
 /// Separador "o entra con" y una fila de botones, uno por proveedor.
 /// `onSelected: null` deshabilita todos (por ejemplo, mientras se carga).
 class SsoButtons extends StatelessWidget {
-  const SsoButtons({super.key, required this.onSelected});
+  const SsoButtons({
+    super.key,
+    required this.onSelected,
+    this.label = 'O ENTRA CON',
+  });
 
   final ValueChanged<SsoProvider>? onSelected;
+  final String label;
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +28,7 @@ class SsoButtons extends StatelessWidget {
             const Expanded(child: _Rule()),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12),
-              child: const Text('O ENTRA CON', style: AppTextStyles.label),
+              child: Text(label.toUpperCase(), style: AppTextStyles.label),
             ),
             const Expanded(child: _Rule()),
           ],

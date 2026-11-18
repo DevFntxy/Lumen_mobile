@@ -30,3 +30,13 @@ class NetworkFailure extends AppFailure {
 class UnknownFailure extends AppFailure {
   const UnknownFailure([super.message = 'Algo salió mal. Inténtalo de nuevo.']);
 }
+
+class EmailInUseFailure extends AppFailure {
+  const EmailInUseFailure()
+      : super('Ese correo ya tiene una cuenta. Inicia sesión o recupera tu contraseña.');
+}
+
+class InvalidCodeFailure extends AppFailure {
+  const InvalidCodeFailure()
+      : super('El código no es correcto. Revísalo en tu correo e inténtalo de nuevo.');
+}

@@ -1,7 +1,4 @@
 import 'package:flutter_test/flutter_test.dart';
-
-// Import relativo a propósito: funciona sin conocer el nombre del paquete.
-// ignore: avoid_relative_lib_imports
 import '../lib/core/utils/validators.dart';
 
 void main() {
@@ -31,4 +28,5 @@ void main() {
       expect(Validators.password('Lumen2026'), isNull);
     });
   });
+  
 }

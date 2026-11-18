@@ -6,10 +6,19 @@ import 'app_background.dart';
 /// fondo, zona segura, scroll (para teclado y pantallas pequeñas) y ancho
 /// máximo para tablets.
 class ScreenScaffold extends StatelessWidget {
-  const ScreenScaffold({super.key, required this.child, this.maxWidth = 440});
+  const ScreenScaffold({
+    super.key,
+    required this.child,
+    this.maxWidth = 440,
+    this.centered = true,
+  });
 
   final Widget child;
   final double maxWidth;
+
+  /// `true` centra el contenido verticalmente (formularios, estados);
+  /// `false` lo alinea arriba (pantallas con cabecera y listas).
+  final bool centered;
 
   static const double _padding = 20;
 
@@ -27,12 +36,20 @@ class ScreenScaffold extends StatelessWidget {
                 padding: const EdgeInsets.all(_padding),
                 child: ConstrainedBox(
                   constraints: BoxConstraints(minHeight: minHeight),
-                  child: Center(
-                    child: ConstrainedBox(
-                      constraints: BoxConstraints(maxWidth: maxWidth),
-                      child: child,
-                    ),
-                  ),
+                  child: centered
+                      ? Center(
+                          child: ConstrainedBox(
+                            constraints: BoxConstraints(maxWidth: maxWidth),
+                            child: child,
+                          ),
+                        )
+                      : Align(
+                          alignment: Alignment.topCenter,
+                          child: ConstrainedBox(
+                            constraints: BoxConstraints(maxWidth: maxWidth),
+                            child: child,
+                          ),
+                        ),
                 ),
               );
             },

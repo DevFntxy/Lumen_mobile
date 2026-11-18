@@ -47,7 +47,17 @@ abstract final class ScreenCatalog {
 
   /// Pantallas ya construidas. Al terminar cada una, se agrega aquí su ID y
   /// se registra su ruta en app_router.dart.
-  static const Set<String> implemented = {'SCR-01', 'SCR-02', 'SCR-18'};
+  static const Set<String> implemented = {
+    'SCR-01',
+    'SCR-02',
+    'SCR-03',
+    'SCR-04',
+    'SCR-05',
+    'SCR-06',
+    'SCR-18',
+    'SCR-19',
+    'SCR-20',
+  };
 
   static ScreenInfo byId(String id) => all.firstWhere((s) => s.id == id);
 

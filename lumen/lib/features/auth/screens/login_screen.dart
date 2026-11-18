@@ -28,7 +28,9 @@ import '../widgets/sso_buttons.dart';
 /// - Éxito: el router detecta la sesión y redirige a Carga (SCR-18).
 /// - Demasiados intentos: Cuenta bloqueada (SCR-19).
 class LoginScreen extends ConsumerStatefulWidget {
-  const LoginScreen({super.key});
+  const LoginScreen({super.key, this.initialMessage});
+
+  final String? initialMessage;
 
   @override
   ConsumerState<LoginScreen> createState() => _LoginScreenState();
@@ -43,6 +45,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   bool _busy = false;
   bool _statusIsError = false;
   String _status = 'Ingresa tus credenciales para continuar.';
+
+  @override
+  void initState() {
+    super.initState();
+    _status = widget.initialMessage ?? _status;
+  }
 
   @override
   void dispose() {

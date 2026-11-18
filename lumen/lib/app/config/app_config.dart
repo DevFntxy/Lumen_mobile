@@ -13,6 +13,9 @@ abstract final class AppConfig {
   /// Latencia artificial de los repositorios mock.
   static const Duration mockLatency = Duration(milliseconds: 700);
 
+  /// Correo de soporte técnico. Valor provisional.
+  static const String supportEmail = 'soporte@lumen.dev';
+
   /// Se usará cuando exista el backend.
   static const String apiBaseUrl = 'http://localhost:8000';
 }

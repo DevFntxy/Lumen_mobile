@@ -38,6 +38,19 @@ class AuthController extends Notifier<AuthState> {
     state = AuthState.authenticated(user);
   }
 
+  Future<void> register({
+    required String username,
+    required String email,
+    required String password,
+  }) async {
+    final user = await _repository.register(
+      username: username,
+      email: email,
+      password: password,
+    );
+    state = AuthState.authenticated(user);
+  }
+
   Future<void> loginWithProvider(SsoProvider provider) async {
     final user = await _repository.loginWithProvider(provider);
     state = AuthState.authenticated(user);
@@ -45,6 +58,11 @@ class AuthController extends Notifier<AuthState> {
 
   Future<void> logout() async {
     await _repository.logout();
+    state = const AuthState.unauthenticated();
+  }
+
+  Future<void> deleteAccount() async {
+    await _repository.deleteAccount();
     state = const AuthState.unauthenticated();
   }
 }

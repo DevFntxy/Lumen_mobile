@@ -23,6 +23,18 @@ abstract final class AppRoutes {
   static const String aboutSoftware = '/about-software';
   static const String aboutTeam = '/about-team';
 
+  /// Secciones de la barra de navegación inferior, en orden.
+  static const List<String> tabPaths = [
+    home,
+    quests,
+    inventory,
+    codex,
+    leaderboard,
+  ];
+
+  /// Rutas a las que no se vuelve con la sesión iniciada.
+  static const Set<String> guestOnlyPaths = {login, register};
+
   /// Rutas accesibles sin sesión iniciada.
   static const Set<String> publicPaths = {
     splash,
