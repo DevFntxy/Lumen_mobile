@@ -13,6 +13,19 @@ import '../../features/auth/screens/register_screen.dart';
 import '../../features/auth/screens/splash_screen.dart';
 import '../../features/auth/screens/unlock_screen.dart';
 import '../../features/home/screens/home_screen.dart';
+import '../../features/codex/screens/codex_screen.dart';
+import '../../features/codex/screens/threat_codex_screen.dart';
+import '../../features/achievements/screens/achievements_screen.dart';
+import '../../features/about/screens/about_software_screen.dart';
+import '../../features/about/screens/about_team_screen.dart';
+import '../../features/inventory/screens/inventory_screen.dart';
+import '../../features/leaderboard/screens/leaderboard_screen.dart';
+import '../../features/map/screens/zone_map_screen.dart';
+import '../../features/memories/screens/memory_fragments_screen.dart';
+import '../../features/missions/screens/missions_screen.dart';
+import '../../features/player/screens/progress_screen.dart';
+import '../../features/settings/screens/settings_screen.dart';
+import '../../features/skills/screens/skills_screen.dart';
 import '../shell/app_shell.dart';
 import 'placeholder_screen.dart';
 import 'routes.dart';
@@ -107,6 +120,25 @@ final routerProvider = Provider<GoRouter>((ref) {
             path: AppRoutes.home,
             pageBuilder: (context, state) => _page(state, const HomeScreen()),
           ),
+          GoRoute(
+            path: AppRoutes.quests,
+            pageBuilder: (context, state) =>
+                _page(state, const MissionsScreen()),
+          ),
+          GoRoute(
+            path: AppRoutes.inventory,
+            pageBuilder: (context, state) =>
+                _page(state, const InventoryScreen()),
+          ),
+          GoRoute(
+            path: AppRoutes.codex,
+            pageBuilder: (context, state) => _page(state, const CodexScreen()),
+          ),
+          GoRoute(
+            path: AppRoutes.leaderboard,
+            pageBuilder: (context, state) =>
+                _page(state, const LeaderboardScreen()),
+          ),
           for (final info in tabPlaceholders)
             GoRoute(
               path: info.path,
@@ -118,6 +150,47 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: AppRoutes.profile,
         pageBuilder: (context, state) => _page(state, const ProfileScreen()),
+      ),
+      GoRoute(
+        path: AppRoutes.progress,
+        pageBuilder: (context, state) => _page(state, const ProgressScreen()),
+      ),
+      GoRoute(
+        path: AppRoutes.bestiary,
+        pageBuilder: (context, state) =>
+            _page(state, const ThreatCodexScreen()),
+      ),
+      GoRoute(
+        path: AppRoutes.achievements,
+        pageBuilder: (context, state) =>
+            _page(state, const AchievementsScreen()),
+      ),
+      GoRoute(
+        path: AppRoutes.memories,
+        pageBuilder: (context, state) =>
+            _page(state, const MemoryFragmentsScreen()),
+      ),
+      GoRoute(
+        path: AppRoutes.zoneMap,
+        pageBuilder: (context, state) => _page(state, const ZoneMapScreen()),
+      ),
+      GoRoute(
+        path: AppRoutes.settings,
+        pageBuilder: (context, state) => _page(state, const SettingsScreen()),
+      ),
+      GoRoute(
+        path: AppRoutes.skills,
+        pageBuilder: (context, state) => _page(state, const SkillsScreen()),
+      ),
+      GoRoute(
+        path: AppRoutes.aboutSoftware,
+        pageBuilder: (context, state) =>
+            _page(state, const AboutSoftwareScreen()),
+      ),
+      GoRoute(
+        path: AppRoutes.aboutTeam,
+        pageBuilder: (context, state) =>
+            _page(state, const AboutTeamScreen()),
       ),
       for (final info in otherPlaceholders)
         GoRoute(

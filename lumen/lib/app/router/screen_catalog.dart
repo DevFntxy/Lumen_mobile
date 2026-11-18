@@ -54,9 +54,22 @@ abstract final class ScreenCatalog {
     'SCR-04',
     'SCR-05',
     'SCR-06',
+    'SCR-07',
+    'SCR-08',
+    'SCR-09',
+    'SCR-10',
+    'SCR-11',
+    'SCR-12',
+    'SCR-13',
+    'SCR-14',
+    'SCR-15',
+    'SCR-16',
+    'SCR-17',
     'SCR-18',
     'SCR-19',
     'SCR-20',
+    'SCR-21',
+    'SCR-22',
   };
 
   static ScreenInfo byId(String id) => all.firstWhere((s) => s.id == id);

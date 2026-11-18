@@ -40,4 +40,9 @@ abstract interface class AuthRepository {
   Future<void> requestUnlockCode();
 
   Future<void> unlockAccount(String code);
+
+  Future<void> changePassword({
+    required String currentPassword,
+    required String newPassword,
+  });
 }

@@ -40,3 +40,12 @@ class InvalidCodeFailure extends AppFailure {
   const InvalidCodeFailure()
       : super('El código no es correcto. Revísalo en tu correo e inténtalo de nuevo.');
 }
+
+class InvalidCurrentPasswordFailure extends AppFailure {
+  const InvalidCurrentPasswordFailure()
+      : super('La contraseña actual no es correcta.');
+}
+
+class RuleFailure extends AppFailure {
+  const RuleFailure(super.message);
+}

@@ -5,8 +5,8 @@ import '../models/auth_user.dart';
 import '../models/sso_provider.dart';
 import 'auth_repository.dart';
 
-/// Implementación simulada: una sola cuenta de demostración, sesión en
-/// memoria y bloqueo tras [AppConfig.maxLoginAttempts] intentos fallidos.
+/// Implementación simulada: cuentas y sesión en memoria, con bloqueo tras
+/// [AppConfig.maxLoginAttempts] intentos fallidos.
 class MockAuthRepository implements AuthRepository {
   MockAuthRepository({Duration? latency})
       : _latency = latency ?? AppConfig.mockLatency;
@@ -20,13 +20,18 @@ class MockAuthRepository implements AuthRepository {
   AuthUser? _session;
   int _failedAttempts = 0;
   bool _locked = false;
+  final Map<String, AuthUser> _usersByEmail = {
+    MockData.demoEmail: _demoUser,
+  };
+  final Map<String, String> _passwordsByEmail = {
+    MockData.demoEmail: MockData.demoPassword,
+  };
 
   final Duration _latency;
 
   Future<void> _wait() => Future<void>.delayed(_latency);
 
-  bool _isDemoEmail(String email) =>
-      email.trim().toLowerCase() == MockData.demoEmail;
+  String _normalizeEmail(String email) => email.trim().toLowerCase();
 
   @override
   Future<AuthUser?> restoreSession() async {
@@ -42,7 +47,9 @@ class MockAuthRepository implements AuthRepository {
     await _wait();
     if (_locked) throw const AccountLockedFailure();
 
-    final valid = _isDemoEmail(email) && password == MockData.demoPassword;
+    final normalizedEmail = _normalizeEmail(email);
+    final user = _usersByEmail[normalizedEmail];
+    final valid = user != null && _passwordsByEmail[normalizedEmail] == password;
 
     if (!valid) {
       _failedAttempts++;
@@ -56,8 +63,8 @@ class MockAuthRepository implements AuthRepository {
     }
 
     _failedAttempts = 0;
-    _session = _demoUser;
-    return _demoUser;
+    _session = user;
+    return user;
   }
 
   @override
@@ -74,13 +81,18 @@ class MockAuthRepository implements AuthRepository {
     required String password,
   }) async {
     await _wait();
-    if (_isDemoEmail(email)) throw const EmailInUseFailure();
+    final normalizedEmail = _normalizeEmail(email);
+    if (_usersByEmail.containsKey(normalizedEmail)) {
+      throw const EmailInUseFailure();
+    }
 
     final user = AuthUser(
-      id: 'usr_${email.trim().toLowerCase().hashCode.abs()}',
-      email: email.trim().toLowerCase(),
+      id: 'usr_${normalizedEmail.hashCode.abs()}',
+      email: normalizedEmail,
       displayName: username.trim(),
     );
+    _usersByEmail[normalizedEmail] = user;
+    _passwordsByEmail[normalizedEmail] = password;
     _session = user;
     return user;
   }
@@ -117,6 +129,7 @@ class MockAuthRepository implements AuthRepository {
   }) async {
     await _wait();
     if (code != MockData.demoOtp) throw const InvalidCodeFailure();
+    _passwordsByEmail[_normalizeEmail(email)] = newPassword;
   }
 
   @override
@@ -128,5 +141,26 @@ class MockAuthRepository implements AuthRepository {
     if (code != MockData.demoOtp) throw const InvalidCodeFailure();
     _locked = false;
     _failedAttempts = 0;
+  }
+
+  @override
+  Future<void> changePassword({
+    required String currentPassword,
+    required String newPassword,
+  }) async {
+    await _wait();
+    final user = _session;
+    if (user == null) {
+      throw const UnknownFailure('Inicia sesión para cambiar tu contraseña.');
+    }
+
+    final email = _normalizeEmail(user.email);
+    if (_passwordsByEmail[email] != currentPassword) {
+      throw const InvalidCurrentPasswordFailure();
+    }
+    if (newPassword.trim().length < 8) {
+      throw const UnknownFailure('La contraseña debe tener al menos 8 caracteres.');
+    }
+    _passwordsByEmail[email] = newPassword;
   }
 }

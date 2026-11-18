@@ -12,10 +12,8 @@ void main() {
 
   setUp(() => repo = MockAuthRepository(latency: Duration.zero));
 
-  Future<void> failLogin() => repo.login(
-        email: MockData.demoEmail,
-        password: 'incorrecta1',
-      );
+  Future<void> failLogin() =>
+      repo.login(email: MockData.demoEmail, password: 'incorrecta1');
 
   test('login correcto devuelve el usuario y deja sesión', () async {
     final user = await repo.login(
@@ -35,16 +33,22 @@ void main() {
     }
   });
 
-  test('bloquea tras maxLoginAttempts, incluso con la clave correcta', () async {
-    for (var i = 1; i < AppConfig.maxLoginAttempts; i++) {
-      await expectLater(failLogin(), throwsA(isA<InvalidCredentialsFailure>()));
-    }
-    await expectLater(failLogin(), throwsA(isA<AccountLockedFailure>()));
-    await expectLater(
-      repo.login(email: MockData.demoEmail, password: MockData.demoPassword),
-      throwsA(isA<AccountLockedFailure>()),
-    );
-  });
+  test(
+    'bloquea tras maxLoginAttempts, incluso con la clave correcta',
+    () async {
+      for (var i = 1; i < AppConfig.maxLoginAttempts; i++) {
+        await expectLater(
+          failLogin(),
+          throwsA(isA<InvalidCredentialsFailure>()),
+        );
+      }
+      await expectLater(failLogin(), throwsA(isA<AccountLockedFailure>()));
+      await expectLater(
+        repo.login(email: MockData.demoEmail, password: MockData.demoPassword),
+        throwsA(isA<AccountLockedFailure>()),
+      );
+    },
+  );
 
   test('desbloqueo con código válido permite volver a entrar', () async {
     for (var i = 0; i < AppConfig.maxLoginAttempts; i++) {
@@ -63,12 +67,18 @@ void main() {
   });
 
   test('código de desbloqueo o recuperación inválido falla', () async {
-    await expectLater(repo.unlockAccount('000000'), throwsA(isA<InvalidCodeFailure>()));
+    await expectLater(
+      repo.unlockAccount('000000'),
+      throwsA(isA<InvalidCodeFailure>()),
+    );
     await expectLater(
       repo.verifyResetCode(email: MockData.demoEmail, code: '000000'),
       throwsA(isA<InvalidCodeFailure>()),
     );
-    await repo.verifyResetCode(email: MockData.demoEmail, code: MockData.demoOtp);
+    await repo.verifyResetCode(
+      email: MockData.demoEmail,
+      code: MockData.demoOtp,
+    );
   });
 
   test('registro con un correo existente falla', () async {
@@ -91,6 +101,38 @@ void main() {
     expect(user.displayName, 'Jugador_1');
     expect((await repo.restoreSession())?.email, 'nuevo@lumen.dev');
   });
+
+  test(
+    'cambiar contraseña verifica la actual y permite volver a entrar',
+    () async {
+      await repo.login(
+        email: MockData.demoEmail,
+        password: MockData.demoPassword,
+      );
+      await expectLater(
+        repo.changePassword(
+          currentPassword: 'contraseña-incorrecta',
+          newPassword: 'NuevaClave2026',
+        ),
+        throwsA(isA<InvalidCurrentPasswordFailure>()),
+      );
+
+      await repo.changePassword(
+        currentPassword: MockData.demoPassword,
+        newPassword: 'NuevaClave2026',
+      );
+      await repo.logout();
+      await expectLater(
+        repo.login(email: MockData.demoEmail, password: MockData.demoPassword),
+        throwsA(isA<InvalidCredentialsFailure>()),
+      );
+      final user = await repo.login(
+        email: MockData.demoEmail,
+        password: 'NuevaClave2026',
+      );
+      expect(user.email, MockData.demoEmail);
+    },
+  );
 
   test('eliminar la cuenta cierra la sesión', () async {
     await repo.login(

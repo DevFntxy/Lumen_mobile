@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../core/widgets/scanline_overlay.dart';
 import 'config/app_config.dart';
+import '../features/settings/providers/settings_providers.dart';
 import 'router/app_router.dart';
 import 'theme/app_theme.dart';
 
@@ -12,6 +13,9 @@ class LumenApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final router = ref.watch(routerProvider);
+    final crtEnabled = ref.watch(
+      settingsControllerProvider.select((settings) => settings.crtEnabled),
+    );
     return MaterialApp.router(
       title: AppConfig.appName,
       debugShowCheckedModeBanner: false,
@@ -19,7 +23,7 @@ class LumenApp extends ConsumerWidget {
       routerConfig: router,
       // El efecto CRT se aplica una sola vez, encima de todas las pantallas.
       builder: (context, child) => ScanlineOverlay(
-        enabled: AppConfig.crtEffect,
+        enabled: crtEnabled,
         child: child ?? const SizedBox.shrink(),
       ),
     );
